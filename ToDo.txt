@@ -1,0 +1,7 @@
+1.  Build out min/max operations (for weakest/strongest link logic)
+
+2.  Build out raw likelihood operations 
+
+3.  Implement "likelihood(threshold, x)" and loglikelihood(threshold, x)" functions
+
+4.  Test autodiff/ML compatibility
