@@ -1,4 +1,8 @@
-1.  Build out min/max operations (for weakest/strongest link logic)
+1.  Build out other operations
+    -   min/max operations (for weakest/strongest link logic)
+    -   ∧ ∨ (\wedge \vee normalized "and/or" to prevent zero-bias from multiple observations)
+        -   divide log-likelihood by number of observations
+        -   ∧(x...) = sum(xi->fillnan(xi,0), x)/sum(!isnan, x)
 
 2.  Build out raw likelihood operations 
 
