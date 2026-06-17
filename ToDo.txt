@@ -1,8 +1,10 @@
 1.  Build out other operations
     -   min/max operations (for weakest/strongest link logic)
-    -   ∧ ∨ (\wedge \vee normalized "and/or" to prevent zero-bias from multiple observations)
-        -   divide log-likelihood by number of observations
-        -   ∧(x...) = sum(xi->fillnan(xi,0), x)/sum(!isnan, x)
+    -   ∧ ∨ (\wedge \vee) alias for and/or operations 
+    -   ⟑ ⟇ (\wedgedot \veedot) consolidated and/or operations (multiple observations with weight of one)
+        -   divide log-likelihood by number of non-NaN observations
+        -   ⟑(x::LogLik...) = LogLik(sum(nan2zero, x)/count(!isnan, x))
+        -   ⟇(x...) = !(⟑(map(!,x)...))
 
 2.  Build out raw likelihood operations 
 
