@@ -3,8 +3,8 @@
     -   ∧ ∨ (\wedge \vee) alias for and/or operations 
     -   ⟑ ⟇ (\wedgedot \veedot) consolidated and/or operations (multiple observations with weight of one)
         -   divide log-likelihood by number of non-NaN observations
-        -   ⟑(x::LogLik...) = LogLik(sum(nan2zero, x)/count(!isnan, x))
-        -   ⟇(x...) = !(⟑(map(!,x)...))
+        -   ⟑(x::LogLik...) = ∧(x...)/count(!isnan, x)
+        -   ⟇(x::LogLik...) = ∨(x...)/count(!isnan, x)
 
 2.  Build out raw likelihood operations 
 
