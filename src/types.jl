@@ -6,13 +6,14 @@ using LogExpFunctions
 #==================================================================================================
 Likelihood types and manipulation
 ==================================================================================================#
-struct Lik{T} <: AbstractLikelihood{T}
+struct Likelihood{T} <: AbstractLikelihood{T}
     value :: T 
 end
-Lik(x::Lik) = x 
-Lik{T}(x::Lik) where T = Lik{T}(x.value)
-Base.convert(::Type{T}, x::Lik) where T<:Lik = T(x)
-Base.promote_rule(::Type{Lik{T1}},::Type{Lik{T2}}) where {T1,T2} = Lik{promote_type(T1,T2)}
+Likelihood(x::Likelihood) = x 
+Likelihood{T}(x::Likelihood) where T = Likelihood{T}(x.value)
+Base.convert(::Type{T}, x::Likelihood) where T<:Likelihood = T(x)
+Base.promote_rule(::Type{Likelihood{T1}},::Type{Likelihood{T2}}) where {T1,T2} = Likelihood{promote_type(T1,T2)}
+
 
 struct LogLik{T} <: AbstractLikelihood{T} 
     value :: T 
@@ -22,14 +23,17 @@ LogLik{T}(x::LogLik) where T = LogLik{T}(x.value)
 Base.convert(::Type{T}, x::LogLik) where T<:LogLik = T(x)
 Base.promote_rule(::Type{LogLik{T1}},::Type{LogLik{T2}}) where {T1,T2} = LogLik{promote_type(T1,T2)}
 
+
 #Cross conversion between likelihoods and log-likelihoods
 Base.convert(::Type{T}, x) where T<:AbstractLikelihood = T(x)
-(::Type{T})(x::Lik) where T<:LogLik = T(log(x.value))
-(::Type{T})(x::LogLik) where T<:Lik = T(exp(x.value))
+LogLik(x::Likelihood) = LogLik(log(x.value))
+LogLik{T}(x::Likelihood) where T = LogLik{T}(log(x.value))
+Likelihood(x::LogLik) = Likelihood(exp(x.value))
+Likelihood{T}(x::LogLik) where T = Likelihood(exp(x.value))
 
 #Prefer log-likelihoods when combining due to computational properties 
-Base.promote_rule(::Type{Lik{T1}}, ::Type{LogLik{T2}}) where {T1,T2} = LogLik{promote_type(T1,T2)}
-Base.promote_rule(::Type{LogLik{T1}}, ::Type{Lik{T2}}) where {T1,T2} = LogLik{promote_type(T1,T2)}
+Base.promote_rule(::Type{Likelihood{T1}}, ::Type{LogLik{T2}}) where {T1,T2} = LogLik{promote_type(T1,T2)}
+Base.promote_rule(::Type{LogLik{T1}}, ::Type{Likelihood{T2}}) where {T1,T2} = LogLik{promote_type(T1,T2)}
 
 
 #==================================================================================================
@@ -44,7 +48,7 @@ Thresholds
 end
 
 #Likelihoods
-Lik(θ::Logistic, x::Number) = Lik(logistic(θ(x)))
-Lik{T}(θ::Logistic, x::Number) where T = Lik{T}(logistic(θ(x)))
+Likelihood(θ::Logistic, x::Number) = Likelihood(logistic(θ(x)))
+Likelihood{T}(θ::Logistic, x::Number) where T = Likelihood{T}(logistic(θ(x)))
 LogLik(θ::Logistic, x::Number) = LogLik(loglogistic(θ(x)))
 LogLik{T}(θ::Logistic, x::Number) where T = LogLik(loglogistic(θ(x)))
