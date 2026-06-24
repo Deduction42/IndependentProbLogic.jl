@@ -8,6 +8,9 @@ Base.:/(L1::T, L2::T) where T <: AbstractLikelihood = T(/(map(getindex, promote(
 Base.exp(lik::LogLik) = Likelihood(lik)
 Base.log(lik::Likelihood) = LogLik(lik)
 
+Base.:*(x::Real, lik::L) where L<:AbstractLikelihood = L(x*lik[])
+Base.:*(lik::L, x::Real) where L<:AbstractLikelihood = L(lik[]*x)
+Base.:/(lik::L, x::Real) where L<:AbstractLikelihood = L(lik[]/x)
 
 Base.:≈(L1::LogLik, L2::LogLik) = (L1[] ≈ L2[])
 Base.:≈(L1::Likelihood, L2::Likelihood) = (L1[] ≈ L2[])
@@ -24,6 +27,7 @@ nan2zero(x::T) where T = ifelse(isnan(x), zero(x), x)
 nan2one(x::T) where T = ifelse(isnan(x), one(x), x)
 Base.isnan(lik::AbstractLikelihood) = isnan(lik[])
 Base.zero(lik::L) where L <: AbstractLikelihood = L(0)
+Base.one(lik::L) where L <: AbstractLikelihood = L(1)
 
 
 """
@@ -39,7 +43,7 @@ Base.:!(lik::Likelihood) = Likelihood(1-lik[])
 
 Independent probabilistic `and` function, multiplies likelihoods (or adds log-likelihoods)
 """
-^(lik::AbstractLikelihood, liks::AbstractLikelihood) = ∧(promote(lik,liks...)...)
+∧(lik::AbstractLikelihood, liks::AbstractLikelihood...) = ∧(promote(lik,liks...)...)
 ∧(lik::Likelihood, liks::Likelihood...) = mapreduce(nan2one, *, (lik, liks...))
 ∧(lik::LogLik, liks::LogLik...) = mapreduce(nan2zero, +, (lik, liks...))
 
@@ -49,7 +53,7 @@ Independent probabilistic `and` function, multiplies likelihoods (or adds log-li
 Independent probabilistic `or` function, multiplies complement likelihoods (or adds complement log-likelihoods)
 and returns the complement of the result
 """
-∨(lik::AbstractLikelihood, liks::AbstractLikelihood) = ∨(promote(lik,liks...)...)
+∨(lik::AbstractLikelihood, liks::AbstractLikelihood...) = ∨(promote(lik,liks...)...)
 ∨(lik::Likelihood, liks::Likelihood...) = !prod(x->nan2one(!x), (lik, liks...))
 ∨(lik::LogLik, liks::LogLik...) = !sum(x->nan2zero(!x), (lik, liks...))
 
