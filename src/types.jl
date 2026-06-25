@@ -40,11 +40,11 @@ Base.promote_rule(::Type{LogLik{T1}}, ::Type{Likelihood{T2}}) where {T1,T2} = Lo
 Thresholds
 ==================================================================================================#
 #Thresholds are callable objects, calling them on a number returns a standardized result
-(θ::AbstractThreshold)(x::Number) = (x-θ.μ)/σ
+(θ::AbstractThreshold)(x::Number) = θ.k*(x-θ.μ)
 
 @kwdef struct Logistic{T} <: AbstractThreshold
     μ :: T 
-    σ :: T
+    k :: T
 end
 
 #Likelihoods
